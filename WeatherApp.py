@@ -5,8 +5,17 @@ HEIGHT = 500
 WIDTH = 600
 
 
-def test_function(entry):
-    print("This is the entry: ", entry)
+def on_focusin(event):  # Event is required as FocusIn probably requires 1 argument
+    if entry.cget('fg') == 'grey':
+        entry.delete(0, "end")
+        entry.insert(0, '')
+        entry.config(fg='black')
+
+
+def on_focusout(event):
+    if entry.get() == '':
+        entry.insert(0, 'Enter City Here')
+        entry.config(fg='grey')
 
 
 def format_response(weather):
@@ -45,16 +54,22 @@ background_label.place(relwidth=1, relheight=1)
 frame = tk.Frame(root, bg='#80c1ff', bd=5)
 frame.place(relx=0.5, rely=0.1, relwidth=0.75, relheight=0.1, anchor='n')
 
-entry = tk.Entry(frame, font=('Courier', 12))
-entry.place(relwidth=0.65, relheight=1)
-
-button = tk.Button(frame, text="Get Weather", font=('Courier', 12), command=lambda: get_weather(entry.get()))
-button.place(relx=0.7, relwidth=0.3, relheight=1)
-
 lower_frame = tk.Frame(root, bg='#80c1ff', bd=10)
 lower_frame.place(relx=0.5, rely=0.25, relwidth=0.75, relheight=0.6, anchor='n')
 
 label = tk.Label(lower_frame, font=('Courier', 15), anchor='nw', justify='left', bd=4)
 label.place(relwidth=1, relheight=1)
+
+entry = tk.Entry(frame, font=('Courier', 12))
+entry.insert(0, 'Enter City Here')
+entry.place(relwidth=0.65, relheight=1)
+entry.bind('<FocusIn>', on_focusin)
+entry.bind('<FocusOut>', on_focusout)
+entry.config(fg='grey')
+
+
+button = tk.Button(frame, text="Get Weather", font=('Courier', 12), command=lambda: get_weather(entry.get()))
+button.place(relx=0.7, relwidth=0.3, relheight=1)
+
 
 root.mainloop()
